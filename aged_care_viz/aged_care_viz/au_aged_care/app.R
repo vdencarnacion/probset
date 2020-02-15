@@ -1,48 +1,81 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(ggplot2)
+library(plotly)
+library(tidyr)
+library(tidyverse)
+library(leaflet)
+library(geojsonR)
+library(rgdal)
+library(dplyr)
 
-# Define UI for application that draws a histogram
+countries <- readOGR(dsn=path.expand("accor_countries.geojson"))
+# print(countries)
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Old Faithful Geyser Data"),
+   titlePanel("Australian Aged Care Units"),
    
-   # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
          sliderInput("bins",
                      "Number of bins:",
                      min = 1,
                      max = 50,
-                     value = 30)
+                     value = 30),
+         
+         actionButton(inputId = "go",
+                      label = "Go")
       ),
-      
-      # Show a plot of the generated distribution
+
       mainPanel(
-         plotOutput("distPlot")
+        tabsetPanel(
+          tabPanel("World Map",
+                   leafletOutput(outputId = "world_map")
+          ),
+          id = "tabs"
+        )
       )
    )
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
-   
-   output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+server <- function(input, output, session) {
+  # WORLD MAP
+  output$world_map <- renderLeaflet({
+    leaflet(countries,
+            options = leafletOptions(dragging = TRUE,
+                                     minZoom = 2)
+            ) %>%
       
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
-   })
+      # leaflet(countries) %>%
+      addTiles() %>%
+      # addProviderTiles("OpenStreetMap.BlackAndWhite") 
+      addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 0.2,
+                  color = 'yellow') %>%
+      clearMarkers()  %>%
+      # setView(lng = 150, lat = 12.8797, zoom = 2) %>%
+      setMaxBounds(lng1 = 200, lat1 = -50,
+                   lng2 = 60, lat2 = 0)
+      # %>%
+      # addAwesomeMarkers(lng = df_popn$Longitude,
+      #                   lat = df_popn$Latitude,
+      #                   icon = awesomeIcons(icon = 'plane',
+      #                                       iconColor = 'black',
+      #                                       library = 'ion',
+      #                                       markerColor = df_popn$Color
+      #                   ),
+      #                   label = paste(df_popn$MainCity, df_popn$Count),
+      #                   popup = paste(df_popn$MainCity, df_popn$Count)
+      # )
+      # %>%
+      # addLegend("topright",
+      #           pal = factpal,
+      #           values = df_popn$Count,
+      #           title = "Member Count",
+      #           opacity = 1)
+  
+  }) # output$world_map
+  
 }
 
 # Run the application 
