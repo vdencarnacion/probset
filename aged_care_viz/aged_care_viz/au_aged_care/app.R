@@ -9,12 +9,13 @@ library(rgdal)
 library(dplyr)
 
 library(jsonlite)
-library(readr) 
-countries <- readOGR("./au-postcodes-Visvalingam-0.1.geojson",
+library(readr)
+source('preprocess.R')
+postcodes <- readOGR("./au-postcodes-Visvalingam-0.1.geojson",
                           layer="au-postcodes-Visvalingam-0.1")
-
-# countries <- readOGR(dsn=path.expand("accor_countries.geojson"))
-# print(countries)
+# countries <- readOGR("./accor_countries.geojson", layer="accor_countries")
+df_main <- preprocess_au_service_list('./Australia-30-June-2019-v2-1.csv')
+  
 ui <- fluidPage(
    
    # Application title
@@ -29,12 +30,14 @@ ui <- fluidPage(
                      value = 30),
          
          actionButton(inputId = "go",
-                      label = "Go")
+                      label = "Go"),
+         
+         width = 2
       ),
 
       mainPanel(
         tabsetPanel(
-          tabPanel("World Map",
+          tabPanel("Australian Map",
                    leafletOutput(outputId = "world_map")
           ),
           id = "tabs"
@@ -45,34 +48,25 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
-  # WORLD MAP
+  # AUSTRALIAN MAP
   output$world_map <- renderLeaflet({
-    leaflet(countries,
+    leaflet(postcodes,
+            # countries,
             options = leafletOptions(dragging = TRUE,
                                      minZoom = 2)
             ) %>%
       
       # leaflet(countries) %>%
       addTiles() %>%
-      # addProviderTiles("OpenStreetMap.BlackAndWhite") 
-      addPolygons(weight=1, smoothFactor = 0.2, fillOpacity = 0.2) %>%
+      addPolygons(weight=1, smoothFactor = 0.2, fillOpacity = 0) %>%
       # clearMarkers()  %>%
-      setView(lng = 133.583, lat = -27.833, zoom=2) %>%
+      setView(lng = 133.583, lat = -27.833, zoom=4) %>%
       setMaxBounds(lng1 = 200, lat1 = -50,
-                   lng2 = 60, lat2 = 0)
-      # setMaxBounds(lng1 = 147.8, lat1 = -43.21,
-      #              lng2 = 117.2, lat2 = -12.5)
-      # %>%
-      # addAwesomeMarkers(lng = df_popn$Longitude,
-      #                   lat = df_popn$Latitude,
-      #                   icon = awesomeIcons(icon = 'plane',
-      #                                       iconColor = 'black',
-      #                                       library = 'ion',
-      #                                       markerColor = df_popn$Color
-      #                   ),
-      #                   label = paste(df_popn$MainCity, df_popn$Count),
-      #                   popup = paste(df_popn$MainCity, df_popn$Count)
-      # )
+                   lng2 = 60, lat2 = 0) %>%
+      addMarkers(lng = df_main$long,
+                 lat = df_main$lat,
+                 clusterOptions = markerClusterOptions(),
+                 label=paste(df_main$service_name, df_main$home_care_places))
       # %>%
       # addLegend("topright",
       #           pal = factpal,
