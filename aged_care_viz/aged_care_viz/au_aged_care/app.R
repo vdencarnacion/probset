@@ -8,7 +8,12 @@ library(geojsonR)
 library(rgdal)
 library(dplyr)
 
-countries <- readOGR(dsn=path.expand("accor_countries.geojson"))
+library(jsonlite)
+library(readr) 
+countries <- readOGR("./au-postcodes-Visvalingam-0.1.geojson",
+                          layer="au-postcodes-Visvalingam-0.1")
+
+# countries <- readOGR(dsn=path.expand("accor_countries.geojson"))
 # print(countries)
 ui <- fluidPage(
    
@@ -50,12 +55,13 @@ server <- function(input, output, session) {
       # leaflet(countries) %>%
       addTiles() %>%
       # addProviderTiles("OpenStreetMap.BlackAndWhite") 
-      addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 0.2,
-                  color = 'yellow') %>%
-      clearMarkers()  %>%
-      # setView(lng = 150, lat = 12.8797, zoom = 2) %>%
+      addPolygons(weight=1, smoothFactor = 0.2, fillOpacity = 0.2) %>%
+      # clearMarkers()  %>%
+      setView(lng = 133.583, lat = -27.833, zoom=2) %>%
       setMaxBounds(lng1 = 200, lat1 = -50,
                    lng2 = 60, lat2 = 0)
+      # setMaxBounds(lng1 = 147.8, lat1 = -43.21,
+      #              lng2 = 117.2, lat2 = -12.5)
       # %>%
       # addAwesomeMarkers(lng = df_popn$Longitude,
       #                   lat = df_popn$Latitude,
