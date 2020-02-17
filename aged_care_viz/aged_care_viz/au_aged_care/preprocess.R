@@ -24,7 +24,7 @@ preprocess_au_service_list <- function(filepath_geoj, filepath_postcodes){
                'abs_remoteness',
                'geoj_lat',
                'geoj_lon',
-               'australian_government_funding_2016_17')
+               'australian_government_funding_2018_19')
   names(df_geoj) <- colnames
   colnames <- c('postcode',
                 'suburb',
@@ -46,11 +46,6 @@ preprocess_au_service_list <- function(filepath_geoj, filepath_postcodes){
   df_geoj$home_care_places[is.na(df_geoj$home_care_places)] <- 1
   return (df_geoj)
 }
-
-wd <- '/Users/vivi/Documents/Git/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
-# df_main <- preprocess_au_service_list(file.path(wd, 'Australia-30-June-2019-v2-1.csv'),
-#                                       file.path(wd, 'Australian_Post_Codes_Lat_Lon.csv'))
-# write.csv(df_main, file.path(wd, 'output.csv'), quote=FALSE)
 
 add_popn_to_geoj <- function(filepath_geoj, layer, filepath_popn, new_filepath_geoj){
   df_popn <- read.csv(filepath_popn)
@@ -112,6 +107,11 @@ get_total_from_index <- function(df, index){
 
   return(df$newcol)
 }
+
+wd <- '/Users/vivi/Documents/Git/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
+# df_main <- preprocess_au_service_list(file.path(wd, 'Australia-30-June-2019-v2-1.csv'),
+#                                       file.path(wd, 'Australian_Post_Codes_Lat_Lon.csv'))
+# write.csv(df_main, file.path(wd, 'output.csv'), quote=FALSE)
 
 # df_main <- add_popn_to_geoj(file.path(wd, 'lga11aAust_0.1.geojson'),
 #                             'lga11aAust_0.1',

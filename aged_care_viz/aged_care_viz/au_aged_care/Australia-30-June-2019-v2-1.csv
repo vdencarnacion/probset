@@ -1,4 +1,4 @@
-﻿Service Name,Physical Address Line 1,Physical Address Line 2,Physical Address Suburb,Physical Address State,Physical Address Post Code,2018 Aged Care Planning Region (ACPR),Care Type,Residential Places,Home Care Places,Restorative Care Places,Provider Name,Organisation Type,ABS Remoteness,Latitude,Longitude,2018-19 Australian Government Funding
+Service Name,Physical Address Line 1,Physical Address Line 2,Physical Address Suburb,Physical Address State,Physical Address Post Code,2018 Aged Care Planning Region (ACPR),Care Type,Residential Places,Home Care Places,Restorative Care Places,Provider Name,Organisation Type,ABS Remoteness,Latitude,Longitude,2018-19 Australian Government Funding
 Braidwood Multi-Purpose Service,77 Monkittee Street,,BRAIDWOOD,NSW,2622,Southern Highlands,Multi-Purpose Service,27,2,,Southern NSW Local Health District,State Government,Inner Regional Australia,-35.44276381,149.8054073," $1,040,681 "
 Dellacourt,42 Nicholson Place,,WEST ALBURY,NSW,2640,Riverina/Murray,Residential,122,,,Lutheran Aged Care Albury,Charitable,Inner Regional Australia,-36.07540064,146.8908956," $8,179,760 "
 Brewarrina Multi-Purpose Service,56 Doyle Street,,BREWARRINA,NSW,2839,Orana Far West,Multi-Purpose Service,12,4,,Western NSW Local Health District,State Government,Very Remote Australia,-29.961591,146.864313," $984,161 "
@@ -5793,5 +5793,3 @@ RFBI Care at Home- South Western Sydney,72 Glendower Street,,GILEAD,NSW,2560,Sou
 Continuity Care,25 Clove Street,,GRIFFIN,QLD,4503,Cabool,Home Care,,,,Continuity Care Australia Pty Ltd,Private Incorporated Body,Major Cities of Australia,-27.261379,153.032108, n.a. 
 Baptcare My Best Life,1193 Toorak Road,,CAMBERWELL,VIC,3124,Eastern Metro,Home Care,,,,Baptcare Ltd,Religious,Major Cities of Australia,-37.848397,145.079876, n.a. 
 Happy Living,450 Waverley Road,,MALVERN EASTS,VIC,3145,Southern Metro,Home Care,,,,Argent Nominees Pty Ltd,Private Incorporated Body,Major Cities of Australia,-37.878463,145.06735, n.a. 
-,,,,,,,,,,,,,,,,
-Note:  * The Aged Care service 'Glenview Homes' has two campuses which deliver care to different Aged Care Planning Regions. The 2018-19 Australian Government funding has been duplicated across both rows in this report.,,,,,,,,,,,,,,,,

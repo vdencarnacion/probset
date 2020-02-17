@@ -1,0 +1,139 @@
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+get_total_from_index <- function(df, index, max_index){
+  df$newcol = 0
+  for (i in index:max_index){
+    df$newcol = df$newcol + df[, i]
+  }
+  # print(df$newcol)
+  return(df$newcol)
+}
+
+# USER INPUT
+wd <- '/Users/vivi/Documents/Git/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
+filepath_popn = file.path(wd, 'population_by_age.csv')
+filepath_acu = file.path(wd, 'Australia-30-June-2019-v2-1.csv')
+
+# READ DATA
+df_popn = read.csv(filepath_popn, stringsAsFactors = FALSE)
+df_acu = read.csv(filepath_acu, stringsAsFactors = FALSE)
+
+# CHANGE COLUMN NAMES
+colnames <- c('state_id',
+              'state_name',
+              'lga_code',
+              'lga_name',
+              'ages00to04', # 5
+              'ages05to09',
+              'ages10to14',
+              'ages15to19',
+              'ages20to24',
+              'ages25to29', # 10
+              'ages30to34',
+              'ages35to39',
+              'ages40to44',
+              'ages45to49',
+              'ages50to54', # 15
+              'ages55to59',
+              'ages60to64',
+              'ages65to69',
+              'ages70to74',
+              'ages75to79', # 20
+              'ages80to84',
+              'ages85andOver',
+              'total_persons')
+names(df_popn) <- colnames
+colnames = c('service_name',
+             'physical_address_line_1',
+             'physical_address_2',
+             'suburb',
+             'state',
+             'postcode',
+             'aged_care_planning_region_acpr_2015',
+             'care_type',
+             'residential_places',
+             'home_care_places',
+             'restorative_care_places',
+             'provider_name',
+             'organisation_type',
+             'abs_remoteness',
+             'geoj_lat',
+             'geoj_lon',
+             'australian_government_funding_2018_19')
+names(df_acu) <- colnames
+
+# ADD ABV FOR STATE NAMES
+df_popn$abv_state = df_popn$state_name
+df_popn$abv_state[df_popn$state_name=='New South Wales'] <- 'NSW'
+df_popn$abv_state[df_popn$state_name=='South Australia'] <- 'SA'
+df_popn$abv_state[df_popn$state_name=='Victoria'] <- 'VIC'
+df_popn$abv_state[df_popn$state_name=='Western Australia'] <- 'WA'
+df_popn$abv_state[df_popn$state_name=='Northern Territory'] <- 'NT'
+df_popn$abv_state[df_popn$state_name=='Tasmania'] <- 'TAS'
+df_popn$abv_state[df_popn$state_name=='Australian Capital Territory'] <- 'ACT'
+df_popn$abv_state[df_popn$state_name=='Queensland'] <- 'QLD'
+df_popn$abv_state[df_popn$state_name=='Other Territories'] <- 'OT'
+# print(unique(df_popn$abv_state))
+print(unique(df_acu$state))
+# print(df_popn[df_popn$state_name=='Other Territories',])
+
+# GET TOTAL POPULATION - STATE-LEVEL
+df_popn_by_state = 
+  df_popn %>%
+  group_by(abv_state) %>%
+  summarise_at(c('ages00to04',
+                 'ages05to09',
+                 'ages10to14',
+                 'ages15to19',
+                 'ages20to24',
+                 'ages25to29',
+                 'ages30to34',
+                 'ages35to39',
+                 'ages40to44',
+                 'ages45to49',
+                 'ages50to54',
+                 'ages55to59',
+                 'ages60to64',
+                 'ages65to69',
+                 'ages70to74',
+                 'ages75to79',
+                 'ages80to84',
+                 'ages85andOver'), sum) %>%
+  data.frame()
+
+# COMPUTE FOR MORE AGGREGATED AGES
+df_popn_by_state$ages35andUp = get_total_from_index(df_popn_by_state, 9, 19)
+df_popn_by_state$ages40andUp = get_total_from_index(df_popn_by_state, 10, 19)
+df_popn_by_state$ages45andUp = get_total_from_index(df_popn_by_state, 11, 19)
+df_popn_by_state$ages50andUp = get_total_from_index(df_popn_by_state, 12, 19)
+df_popn_by_state$ages55andUp = get_total_from_index(df_popn_by_state, 13, 19)
+df_popn_by_state$ages60andUp = get_total_from_index(df_popn_by_state, 14, 19)
+df_popn_by_state$ages65andUp = get_total_from_index(df_popn_by_state, 15, 19)
+df_popn_by_state$ages70andUp = get_total_from_index(df_popn_by_state, 16, 19)
+df_popn_by_state$ages75andUp = get_total_from_index(df_popn_by_state, 17, 19)
+df_popn_by_state$ages80andUp = get_total_from_index(df_popn_by_state, 18, 19)
+df_popn_by_state$ages85andUp = get_total_from_index(df_popn_by_state, 19, 19)
+df_popn_by_state = df_popn_by_state[, c('abv_state',
+                                        # 'ages35andUp',
+                                        # 'ages40andUp',
+                                        # 'ages45andUp',
+                                        # 'ages50andUp',
+                                        # 'ages55andUp',
+                                        'ages60andUp',
+                                        'ages65andUp',
+                                        'ages70andUp',
+                                        'ages75andUp',
+                                        'ages80andUp',
+                                        'ages85andUp')]
+write_csv(df_popn_by_state, file.path(wd, 'df_popn_by_state_aggregated.csv'), quote=FALSE)
+
+# df_popn = df_popn_by_state %>%
+#   gather(key="age_range", value="popn_by_age_range", -abv_state)
+# print(df_popn)
+# p = ggplot(data=df_popn, aes(x=abv_state, y=popn_by_age_range, fill=age_range)) + geom_bar(stat='identity')
+
+# print(head(df_popn))
+# print(head(df_acu))
+# print(df_popn_by_state)
