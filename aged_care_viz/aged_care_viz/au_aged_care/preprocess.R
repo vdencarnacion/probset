@@ -42,8 +42,12 @@ preprocess_au_service_list <- function(filepath_geoj, filepath_postcodes){
                         'state',
                         'geoj_lat',
                         'geoj_lon',
-                        'home_care_places')]
-  df_geoj$home_care_places[is.na(df_geoj$home_care_places)] <- 1
+                        'home_care_places',
+                        'residential_places',
+                        'restorative_care_places')]
+  df_geoj$home_care_places[is.na(df_geoj$home_care_places)] <- 0
+  df_geoj$residential_places[is.na(df_geoj$residential_places)] <- 0
+  df_geoj$restorative_care_places[is.na(df_geoj$restorative_care_places)] <- 0
   return (df_geoj)
 }
 
@@ -111,7 +115,6 @@ get_total_from_index <- function(df, index){
 wd <- '/Users/vivi/Documents/Git/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
 # df_main <- preprocess_au_service_list(file.path(wd, 'Australia-30-June-2019-v2-1.csv'),
 #                                       file.path(wd, 'Australian_Post_Codes_Lat_Lon.csv'))
-# write.csv(df_main, file.path(wd, 'output.csv'), quote=FALSE)
 
 # df_main <- add_popn_to_geoj(file.path(wd, 'lga11aAust_0.1.geojson'),
 #                             'lga11aAust_0.1',

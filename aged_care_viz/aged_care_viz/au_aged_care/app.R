@@ -131,10 +131,13 @@ server <- function(input, output, session) {
         setMaxBounds(lng1 = 200, lat1 = -50,
                      lng2 = 60, lat2 = 0) %>%
         clearMarkers()  %>%
+        # addCircleMarkers(lng = df_local$geoj_lon,
+        #       lat = df_local$geoj_lat)
         addMarkers(lng = df_local$geoj_lon,
                    lat = df_local$geoj_lat,
                    clusterOptions = markerClusterOptions(),
                    label=paste(df_local$service_name, df_local$home_care_places))
+        
       })
     })
 
@@ -153,4 +156,3 @@ server <- function(input, output, session) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
