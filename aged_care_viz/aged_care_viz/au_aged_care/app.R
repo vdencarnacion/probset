@@ -90,7 +90,7 @@ server <- function(input, output, session) {
   xdf_popn_by_age <- reactive({
     input_age_range = input$age_range
 
-    df_popn = df_popn_by_state %>%
+    df_popn = df_popn_by_state_aggregated %>%
       gather(key=age_range, value="popn_by_age_range", -abv_state)
     df_popn$age_range = as.factor(df_popn$age_range)
     df_popn$abv_state = as.factor(df_popn$abv_state)
