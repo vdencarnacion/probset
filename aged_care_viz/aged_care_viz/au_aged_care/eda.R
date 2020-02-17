@@ -13,6 +13,7 @@ get_total_from_index <- function(df, index, max_index){
 
 # USER INPUT
 wd <- '/Users/vivi/Documents/Git/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
+wd <- '~/vivi/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
 filepath_popn = file.path(wd, 'population_by_age.csv')
 filepath_acu = file.path(wd, 'Australia-30-June-2019-v2-1.csv')
 
@@ -78,6 +79,9 @@ df_popn$abv_state[df_popn$state_name=='Other Territories'] <- 'OT'
 # print(unique(df_popn$abv_state))
 print(unique(df_acu$state))
 # print(df_popn[df_popn$state_name=='Other Territories',])
+
+# PROCESS LGA NAME
+df_popn$lga_new = toupper(sub(' \\(.*\\)', '', df_popn$lga_name))
 
 # GET TOTAL POPULATION - STATE-LEVEL
 df_popn_by_state = 
@@ -158,9 +162,9 @@ df_acu_by_state$total_perc = df_acu_by_state$total/sum(df_acu_by_state$total)
 # df_acu$[is.na(df_acu$)] <- 0
 # print(unique(df_acu$residential_places ))
 
-# print(head(df_popn))
+print(head(df_popn))
 # print(head(df_acu))
-print(df_popn_by_state)
-print(df_acu_by_state)
+# print(df_popn_by_state)
+# print(df_acu_by_state)
 write_csv(df_acu_by_state, file.path(wd, 'df_acu_by_state_aggregated.csv'), quote=FALSE)
 

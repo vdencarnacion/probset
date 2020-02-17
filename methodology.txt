@@ -1,0 +1,3 @@
+Stacks Used:
+- R (RShiny, dplyr, leaflet)
+- GeoJSON & Mac terminal
