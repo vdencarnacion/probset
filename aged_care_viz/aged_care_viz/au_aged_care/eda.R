@@ -138,6 +138,7 @@ write_csv(df_popn_by_state, file.path(wd, 'df_popn_by_state_aggregated.csv'), qu
 df_acu$home_care_places[is.na(df_acu$home_care_places)] <- 0
 df_acu$residential_places[is.na(df_acu$residential_places)] <- 0
 df_acu$restorative_care_places[is.na(df_acu$restorative_care_places)] <- 0
+df_acu$total = df_acu$home_care_places + df_acu$residential_places + df_acu$restorative_care_places
 df_acu$count <- 1
 
 df_acu_by_state = 
@@ -146,13 +147,20 @@ df_acu_by_state =
   summarise_at(c('count',
                  'home_care_places',
                  'residential_places',
-                 'restorative_care_places'),
+                 'restorative_care_places',
+                 'total'),
                sum) %>%
   data.frame()
+df_acu_by_state$hcp_perc = df_acu_by_state$home_care_places/sum(df_acu_by_state$home_care_places)
+df_acu_by_state$rp_perc = df_acu_by_state$residential_places/sum(df_acu_by_state$residential_places)
+df_acu_by_state$rcp_perc = df_acu_by_state$restorative_care_places/sum(df_acu_by_state$restorative_care_places)
+df_acu_by_state$total_perc = df_acu_by_state$total/sum(df_acu_by_state$total)
 # df_acu$[is.na(df_acu$)] <- 0
 # print(unique(df_acu$residential_places ))
 
 # print(head(df_popn))
 # print(head(df_acu))
-# print(df_popn_by_state)
+print(df_popn_by_state)
 print(df_acu_by_state)
+write_csv(df_acu_by_state, file.path(wd, 'df_acu_by_state_aggregated.csv'), quote=FALSE)
+
