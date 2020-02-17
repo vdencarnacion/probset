@@ -11,10 +11,9 @@ library(dplyr)
 source('preprocess.R')
 
 # GeoJSON
-# lga_gda <- readOGR("./lga11aAust_final.geojson",
-#                    layer="spDf")
+lga_gda <- readOGR("./lga11aAust_final.geojson",
+                   layer="spDf")
 # Data
-# countries <- readOGR("./countries.geojson", layer="accor_countries")
 df_main <- preprocess_au_service_list('./Australia-30-June-2019-v2-1.csv',
                                       './Australian_Post_Codes_Lat_Lon.csv')
 df_popn_by_state_aggregated = read_csv('./df_popn_by_state_aggregated.csv')
@@ -44,10 +43,10 @@ ui <- fluidPage(
 
       mainPanel(
         tabsetPanel(
+          tabPanel("Australian Map",
+                   leafletOutput(outputId = "population")),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state")),
-          # tabPanel("Australian Map",
-          #          leafletOutput(outputId = "population")),
           id = "tabs"
         )
       )
@@ -111,56 +110,43 @@ server <- function(input, output, session) {
   })
   
   # AUSTRALIAN MAP (CLUSTERED ACUs)
-  # output$population <- renderLeaflet({
-  #   input$go
-  #   isolate({
-  #     df_local = xdf_local()
-  #     pal <- colorQuantile("Greens", lga_gda$total_persons, n = 5)
-  #     isolate({
-  #       leaflet(lga_gda,
-  #               options = leafletOptions(dragging = TRUE,
-  #                                        minZoom = 2)
-  #       ) %>%
-  #       addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 0.7, color=~pal(total_persons)) %>%
-  #       addLegend("bottomright", pal = pal, values = ~total_persons,
-  #                 title = "Population by Age",
-  #                 # labFormat = labelFormat(prefix = "$"),
-  #                 opacity = 1
-  #       ) %>%
-  #       addTiles() %>%
-  #       setView(lng = 133.583, lat = -27.833, zoom=4) %>%
-  #       setMaxBounds(lng1 = 200, lat1 = -50,
-  #                    lng2 = 60, lat2 = 0) %>%
-  #       clearMarkers()  %>%
-  #       addMarkers(lng = df_local$geoj_lon,
-  #                  lat = df_local$geoj_lat,
-  #                  clusterOptions = markerClusterOptions(),
-  #                  label=paste(df_local$service_name, df_local$home_care_places))
-  #     })
-  #   })
-  #   
-  # })
-  
-  #      abv_state   age_range popn_by_age_range
-  # 1        ACT ages35andUp            210994
-  # 2        NSW ages35andUp           4276488
-  # 3         NT ages35andUp            113886
-  # 4         OT ages35andUp              2830
-  # 5        QLD ages35andUp           2661210
+  output$population <- renderLeaflet({
+    input$go
+    isolate({
+      df_local = xdf_local()
+      pal <- colorQuantile("Greens", lga_gda$total_persons, n = 5)
+      isolate({
+        leaflet(lga_gda,
+                options = leafletOptions(dragging = TRUE,
+                                         minZoom = 2)
+        ) %>%
+        addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 0.7, color=~pal(total_persons)) %>%
+        addLegend("bottomright", pal = pal, values = ~total_persons,
+                  title = "Population by Age",
+                  # labFormat = labelFormat(prefix = "$"),
+                  opacity = 1
+        ) %>%
+        addTiles() %>%
+        setView(lng = 133.583, lat = -27.833, zoom=4) %>%
+        setMaxBounds(lng1 = 200, lat1 = -50,
+                     lng2 = 60, lat2 = 0) %>%
+        clearMarkers()  %>%
+        addMarkers(lng = df_local$geoj_lon,
+                   lat = df_local$geoj_lat,
+                   clusterOptions = markerClusterOptions(),
+                   label=paste(df_local$service_name, df_local$home_care_places))
+      })
+    })
+
+  })
   
   output$bargraph_age_range_by_state <- renderPlotly({
     xdf_popn = xdf_popn()
-    p = ggplot(xdf_popn, aes(x=abv_state, y=popn_by_age_range)) +
+    p = ggplot(xdf_popn, aes(x=abv_state, y=popn_by_age_range, fill=abv_state)) +
       geom_bar(stat="sum") +
-      facet_wrap(~ age_range)
-      # geom_bar()
-      # geom_bar(aes_string(fill = factor(df_popn_by_state_aggregated$abv_state))) +
-      # geom_bar(aes(fill = df_popn_by_state_aggregated$abv_state), stat = "sum") +
-      # xlab("State") +
-      # ylab("Age Range") +
-      # scale_fill_discrete(name = "State") +
-      # theme(axis.text.x = element_text(angle = 90, hjust = 1))
-    ggplotly(p)
+      xlab("State") +
+      ylab("Total Population")
+    ggplotly(p, height=500)
   })
   
 }
