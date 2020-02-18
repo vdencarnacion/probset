@@ -14,8 +14,8 @@ source('preprocess.R')
 plotly.templates.default = "plotly_white"
 
 # GeoJSON
-lga_gda <- readOGR("./lga11aAust_final.geojson",
-                   layer="spDf")
+# lga_gda <- readOGR("./lga11aAust_final.geojson",
+#                    layer="spDf")
 # Data
 df_main <- preprocess_au_service_list('./Australia-30-June-2019-v2-1.csv',
                                       './Australian_Post_Codes_Lat_Lon.csv')
@@ -55,8 +55,8 @@ ui <- fluidPage(
 
       mainPanel(
         tabsetPanel(
-          tabPanel("Australian Map",
-                   leafletOutput(outputId = "population")),
+          # tabPanel("Australian Map",
+          #          leafletOutput(outputId = "population")),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),
@@ -265,7 +265,7 @@ server <- function(input, output, session) {
                            'Home Care Places',
                            'Resi- dential Places',
                            'Resto- rative Care Places',
-                           'Total Capacity',
+                           'Total ACU Capacity',
                            '%HCP', '%RP', '%RCP', '%Total ACU Capacity',
                            'Total Population',
                            '%Popn Distribution',
@@ -275,12 +275,12 @@ server <- function(input, output, session) {
                               'Home Care Places',
                               'Resi- dential Places',
                               'Resto- rative Care Places',
-                              'Total Capacity',
+                              'Total ACU Capacity',
+                              'Total Population',
                               '%HCP', '%RP', '%RCP',
                               '%Total ACU Capacity',
                               '%Popn Distribution',
                               'Ratio %Popn-%ACU')]
-    # df_acu$Ratio = df_acu$ACUCount / df_acu$TotalCapacity
     df_acu = DT::datatable(merged_df, rownames=FALSE) %>% 
       formatPercentage(c('%HCP', '%RP', '%RCP',
                          '%Total ACU Capacity',

@@ -1,0 +1,13 @@
+name: au_aged_care
+title: au_aged_care
+username:
+account: viviennee
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1826758
+bundleId: 2808991
+url: https://viviennee.shinyapps.io/au_aged_care/
+when: 1582032648.56632
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: sample_output.csv|unused
