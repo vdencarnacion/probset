@@ -14,8 +14,8 @@ source('preprocess.R')
 plotly.templates.default = "plotly_white"
 
 # GeoJSON
-# lga_gda <- readOGR("./lga11aAust_final.geojson",
-#                    layer="spDf")
+lga_gda <- readOGR("./lga11aAust_final.geojson",
+                   layer="spDf")
 # Data
 df_main <- preprocess_au_service_list('./Australia-30-June-2019-v2-1.csv',
                                       './Australian_Post_Codes_Lat_Lon.csv')
@@ -48,15 +48,15 @@ ui <- fluidPage(
                     multiple = FALSE,
                     selected = c("ages50andUp")),
 
-         actionButton(inputId = "go",
-                      label = "Go"),
+         # actionButton(inputId = "go",
+         #              label = "Go"),
          width = 3
       ),
 
       mainPanel(
         tabsetPanel(
-          # tabPanel("Australian Map",
-          #          leafletOutput(outputId = "population")),
+          tabPanel("Australian Map",
+                   leafletOutput(outputId = "population")),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),
@@ -188,38 +188,38 @@ server <- function(input, output, session) {
   })
   
   # AUSTRALIAN MAP (CLUSTERED ACUs)
-  # output$population <- renderLeaflet({
-  #   input$go
-  #   isolate({
-  #     xdf_acu = xdf_acu()
-  #     pal <- colorQuantile("Greens", lga_gda$total_persons, n = 5)
-  #     isolate({
-  #       leaflet(lga_gda,
-  #               options = leafletOptions(dragging = TRUE,
-  #                                        minZoom = 2)
-  #       ) %>%
-  #       addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 0.7, color=~pal(total_persons)) %>%
-  #       addLegend("bottomright", pal = pal, values = ~total_persons,
-  #                 title = "Population by Age",
-  #                 # labFormat = labelFormat(prefix = "$"),
-  #                 opacity = 1
-  #       ) %>%
-  #       addTiles() %>%
-  #       setView(lng = 133.583, lat = -27.833, zoom=4) %>%
-  #       setMaxBounds(lng1 = 200, lat1 = -50,
-  #                    lng2 = 60, lat2 = 0) %>%
-  #       clearMarkers()  %>%
-  #       # addCircleMarkers(lng = xdf_acu$geoj_lon,
-  #       #       lat = xdf_acu$geoj_lat)
-  #       addMarkers(lng = xdf_acu$geoj_lon,
-  #                  lat = xdf_acu$geoj_lat,
-  #                  clusterOptions = markerClusterOptions(),
-  #                  label=paste(xdf_acu$service_name, xdf_acu$home_care_places))
-  #       
-  #     })
-  #   })
-  # 
-  # })
+  output$population <- renderLeaflet({
+    # input$go
+    # isolate({
+    xdf_acu = xdf_acu()
+    pal <- colorQuantile("Greens", lga_gda$total_persons, n = 5)
+    isolate({
+      leaflet(lga_gda,
+              options = leafletOptions(dragging = TRUE,
+                                       minZoom = 2)
+      ) %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 0.7, color=~pal(total_persons)) %>%
+      addLegend("bottomright", pal = pal, values = ~total_persons,
+                title = "Population by Age",
+                # labFormat = labelFormat(prefix = "$"),
+                opacity = 1
+      ) %>%
+      addTiles() %>%
+      setView(lng = 133.583, lat = -27.833, zoom=4) %>%
+      setMaxBounds(lng1 = 200, lat1 = -50,
+                   lng2 = 60, lat2 = 0) %>%
+      clearMarkers()  %>%
+      # addCircleMarkers(lng = xdf_acu$geoj_lon,
+      #       lat = xdf_acu$geoj_lat)
+      addMarkers(lng = xdf_acu$geoj_lon,
+                 lat = xdf_acu$geoj_lat,
+                 clusterOptions = markerClusterOptions(),
+                 label=paste(xdf_acu$service_name, xdf_acu$home_care_places))
+
+    })
+    # })
+
+  })
   
   output$bargraph_age_range_by_state <- renderPlotly({
 
