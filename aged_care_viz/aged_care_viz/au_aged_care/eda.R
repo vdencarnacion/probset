@@ -13,7 +13,7 @@ get_total_from_index <- function(df, index, max_index){
 
 # USER INPUT
 wd <- '/Users/vivi/Documents/Git/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
-wd <- '~/vivi/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
+# wd <- '~/vivi/annalect_probset/aged_care_viz/aged_care_viz/au_aged_care'
 filepath_popn = file.path(wd, 'population_by_age.csv')
 filepath_acu = file.path(wd, 'Australia-30-June-2019-v2-1.csv')
 
@@ -120,11 +120,11 @@ df_popn_by_state$ages75andUp = get_total_from_index(df_popn_by_state, 17, 19)
 df_popn_by_state$ages80andUp = get_total_from_index(df_popn_by_state, 18, 19)
 df_popn_by_state$ages85andUp = get_total_from_index(df_popn_by_state, 19, 19)
 df_popn_by_state = df_popn_by_state[, c('abv_state',
-                                        # 'ages35andUp',
-                                        # 'ages40andUp',
-                                        # 'ages45andUp',
-                                        # 'ages50andUp',
-                                        # 'ages55andUp',
+                                        'ages35andUp',
+                                        'ages40andUp',
+                                        'ages45andUp',
+                                        'ages50andUp',
+                                        'ages55andUp',
                                         'ages60andUp',
                                         'ages65andUp',
                                         'ages70andUp',
@@ -136,7 +136,7 @@ write_csv(df_popn_by_state, file.path(wd, 'df_popn_by_state_aggregated.csv'), qu
 # GET TOTAL POPULATION - LGA LEVEL
 df_popn_by_lga =
   df_popn %>%
-  group_by(lga_new) %>%
+  group_by(abv_state, lga_new) %>%
   summarise_at(c('ages00to04',
                  'ages05to09',
                  'ages10to14',
@@ -159,30 +159,30 @@ df_popn_by_lga =
 # print(head(df_popn_by_lga))
 
 # COMPUTE FOR MORE AGGREGATED AGES
-df_popn_by_lga$ages35andUp = get_total_from_index(df_popn_by_lga, 9, 19)
-df_popn_by_lga$ages40andUp = get_total_from_index(df_popn_by_lga, 10, 19)
-df_popn_by_lga$ages45andUp = get_total_from_index(df_popn_by_lga, 11, 19)
-df_popn_by_lga$ages50andUp = get_total_from_index(df_popn_by_lga, 12, 19)
-df_popn_by_lga$ages55andUp = get_total_from_index(df_popn_by_lga, 13, 19)
-df_popn_by_lga$ages60andUp = get_total_from_index(df_popn_by_lga, 14, 19)
-df_popn_by_lga$ages65andUp = get_total_from_index(df_popn_by_lga, 15, 19)
-df_popn_by_lga$ages70andUp = get_total_from_index(df_popn_by_lga, 16, 19)
-df_popn_by_lga$ages75andUp = get_total_from_index(df_popn_by_lga, 17, 19)
-df_popn_by_lga$ages80andUp = get_total_from_index(df_popn_by_lga, 18, 19)
-df_popn_by_lga$ages85andUp = get_total_from_index(df_popn_by_lga, 19, 19)
-df_popn_by_lga = df_popn_by_lga[, c('lga_new',
-                                    # 'ages35andUp',
-                                    # 'ages40andUp',
-                                    # 'ages45andUp',
-                                    # 'ages50andUp',
-                                    # 'ages55andUp',
+df_popn_by_lga$ages35andUp = get_total_from_index(df_popn_by_lga, 10, 20)
+df_popn_by_lga$ages40andUp = get_total_from_index(df_popn_by_lga, 11, 20)
+df_popn_by_lga$ages45andUp = get_total_from_index(df_popn_by_lga, 12, 20)
+df_popn_by_lga$ages50andUp = get_total_from_index(df_popn_by_lga, 13, 20)
+df_popn_by_lga$ages55andUp = get_total_from_index(df_popn_by_lga, 14, 20)
+df_popn_by_lga$ages60andUp = get_total_from_index(df_popn_by_lga, 15, 20)
+df_popn_by_lga$ages65andUp = get_total_from_index(df_popn_by_lga, 16, 20)
+df_popn_by_lga$ages70andUp = get_total_from_index(df_popn_by_lga, 17, 20)
+df_popn_by_lga$ages75andUp = get_total_from_index(df_popn_by_lga, 18, 20)
+df_popn_by_lga$ages80andUp = get_total_from_index(df_popn_by_lga, 19, 20)
+df_popn_by_lga$ages85andUp = get_total_from_index(df_popn_by_lga, 20, 20)
+df_popn_by_lga = df_popn_by_lga[, c('abv_state',
+                                    'lga_new',
+                                    'ages35andUp',
+                                    'ages40andUp',
+                                    'ages45andUp',
+                                    'ages50andUp',
+                                    'ages55andUp',
                                     'ages60andUp',
                                     'ages65andUp',
                                     'ages70andUp',
                                     'ages75andUp',
                                     'ages80andUp',
                                     'ages85andUp')]
-# print(head(df_popn_by_lga))
 write_csv(df_popn_by_lga, file.path(wd, 'df_popn_by_lga_aggregated.csv'), quote=FALSE)
 
 # AGGREGATE ACU BY STATE
@@ -208,12 +208,6 @@ df_acu_by_state$rcp_perc = df_acu_by_state$restorative_care_places/sum(df_acu_by
 df_acu_by_state$total_perc = df_acu_by_state$total/sum(df_acu_by_state$total)
 write_csv(df_acu_by_state, file.path(wd, 'df_acu_by_state_aggregated.csv'), quote=FALSE)
 
-# print(unique(df_acu$residential_places )).
-# print(head(df_popn))
-# print(head(df_acu))
-# print(df_popn_by_state)
-# print(df_acu_by_state)
-
 # AGGREGATE ACU BY SUBURB (LGA?)
 df_acu_by_suburb = 
   df_acu %>%
@@ -230,4 +224,15 @@ df_acu_by_suburb$rp_perc = df_acu_by_suburb$residential_places/sum(df_acu_by_sub
 df_acu_by_suburb$rcp_perc = df_acu_by_suburb$restorative_care_places/sum(df_acu_by_suburb$restorative_care_places)
 df_acu_by_suburb$total_perc = df_acu_by_suburb$total/sum(df_acu_by_suburb$total)
 write_csv(df_acu_by_suburb, file.path(wd, 'df_acu_by_suburb_aggregated.csv'), quote=FALSE)
+
+
+# print(unique(df_acu$residential_places )).
+# print(head(df_popn))
+# print(head(df_acu))
+# print(df_popn_by_state)
+# print(df_acu_by_state)
+# print(head(df_popn_by_lga))
 # print(head(df_acu_by_suburb))
+
+# MERGE POPN (LGA) AND ACU (SUBURB)
+
