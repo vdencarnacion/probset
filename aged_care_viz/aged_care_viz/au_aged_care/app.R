@@ -23,7 +23,7 @@ df_popn_by_state_aggregated = read_csv('./df_popn_by_state_aggregated.csv')
 df_popn_by_lga_aggregated = read_csv('./df_popn_by_lga_aggregated.csv')
 df_acu_by_state_aggregated = read_csv('./df_acu_by_state_aggregated.csv')
 df_acu_by_suburb_aggregated = read_csv('./df_acu_by_suburb_aggregated.csv')
-print(head(df_popn_by_state_aggregated))
+# print(df_popn_by_state_aggregated)
 
 ui <- fluidPage(
    
@@ -60,9 +60,9 @@ ui <- fluidPage(
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),
-          tabPanel("Population by Age (Local Government Area)",
-                   DT::dataTableOutput(outputId='df_popn_by_lga'),
-                   DT::dataTableOutput(outputId='df_acu_by_suburb')),
+          # tabPanel("Population by Age (Local Government Area)",
+          #          DT::dataTableOutput(outputId='df_popn_by_lga'),
+          #          DT::dataTableOutput(outputId='df_acu_by_suburb')),
           id = "tabs"
         )
       )
@@ -222,6 +222,7 @@ server <- function(input, output, session) {
   # })
   
   output$bargraph_age_range_by_state <- renderPlotly({
+
     xdf_popn_by_age = xdf_popn_by_age()
     p = xdf_popn_by_age %>%
       mutate(pct = prop.table(popn_by_age_range)) %>%
@@ -236,41 +237,59 @@ server <- function(input, output, session) {
       xlab("State") +
       ylab("Total Population")
     ggplotly(p)
+    # })
+    
   })
 
   output$df_acu_by_state <- DT::renderDataTable({
-    isolate({
-      input$go
-      df_popn_perc_by_state = xdf_popn_perc_by_state()
-      
-      colnames(df_acu_by_state_aggregated) = c('State',
-                                               'ACU Count',
-                                               'Home Care Places',
-                                               'Residential Places',
-                                               'Restorative Care Places',
-                                               'Total Capacity',
-                                               '%HCP', '%RP', '%RCP', '%Total ACU Capacity')
-      merged_df = merge(df_acu_by_state_aggregated,
-                        df_popn_perc_by_state,
-                        by="State", all.x=TRUE)
-      merged_df = merged_df[, c('State',
-                                'ACU Count',
-                                'Home Care Places',
-                                'Residential Places',
-                                'Restorative Care Places',
-                                'Total Capacity',
-                                '%HCP', '%RP', '%RCP',
-                                '%Total ACU Capacity',
-                                '%Popn Distribution')]
-      # df_acu$Ratio = df_acu$ACUCount / df_acu$TotalCapacity
-      df_acu = DT::datatable(merged_df, rownames=FALSE) %>% 
-        formatPercentage(c('%HCP', '%RP', '%RCP',
-                           '%Total ACU Capacity',
-                           '%Popn Distribution'), 
-                         2)
-      
-      return (df_acu)
-    })
+    # isolate({
+    #   input$go
+    df_popn_perc_by_state = xdf_popn_perc_by_state()
+    
+    colnames(df_acu_by_state_aggregated) = c('State',
+                                             'ACU Count',
+                                             'Home Care Places',
+                                             'Residential Places',
+                                             'Restorative Care Places',
+                                             'Total Capacity',
+                                             '%HCP', '%RP', '%RCP', '%Total ACU Capacity')
+    merged_df = merge(df_acu_by_state_aggregated,
+                      df_popn_perc_by_state,
+                      by="State", all.x=TRUE)
+    merged_df$Ratio = merged_df[, c('%Popn Distribution')]
+    merged_df$Ratio2 = merged_df[, c("%Total ACU Capacity")]
+    merged_df$Ratio = merged_df$Ratio / merged_df$Ratio2
+    merged_df$Ratio2 = NULL
+    colnames(merged_df) = c('State',
+                           'ACU Count',
+                           'Home Care Places',
+                           'Resi- dential Places',
+                           'Resto- rative Care Places',
+                           'Total Capacity',
+                           '%HCP', '%RP', '%RCP', '%Total ACU Capacity',
+                           'Total Population',
+                           '%Popn Distribution',
+                           'Ratio %Popn-%ACU')
+    merged_df = merged_df[, c('State',
+                              'ACU Count',
+                              'Home Care Places',
+                              'Resi- dential Places',
+                              'Resto- rative Care Places',
+                              'Total Capacity',
+                              '%HCP', '%RP', '%RCP',
+                              '%Total ACU Capacity',
+                              '%Popn Distribution',
+                              'Ratio %Popn-%ACU')]
+    # df_acu$Ratio = df_acu$ACUCount / df_acu$TotalCapacity
+    df_acu = DT::datatable(merged_df, rownames=FALSE) %>% 
+      formatPercentage(c('%HCP', '%RP', '%RCP',
+                         '%Total ACU Capacity',
+                         '%Popn Distribution'), 
+                       2) %>%
+      formatRound(c('Ratio %Popn-%ACU'), 2)
+    
+    return (df_acu)
+    # })
   }, rownames=FALSE)
   
   output$df_popn_by_lga <- DT::renderDataTable({
