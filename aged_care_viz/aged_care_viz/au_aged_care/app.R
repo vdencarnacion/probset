@@ -14,8 +14,8 @@ source('preprocess.R')
 plotly.templates.default = "plotly_white"
 
 # GeoJSON
-# lga_gda <- readOGR("./lga11aAust_final.geojson",
-#                    layer="spDf")
+lga_gda <- readOGR("./lga11aAust_final.geojson",
+                   layer="spDf")
 # Data
 df_main <- preprocess_au_service_list('./Australia-30-June-2019-v2-1.csv',
                                       './Australian_Post_Codes_Lat_Lon.csv')
@@ -55,8 +55,10 @@ ui <- fluidPage(
 
       mainPanel(
         tabsetPanel(
-          # tabPanel("Australian Map",
-          #          leafletOutput(outputId = "population")),
+          tabPanel("Australian Map",
+                   leafletOutput(outputId = "population")),
+          tabPanel("ACU Allocation",
+                   DT::dataTableOutput(outputId='df_alloc')),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),
@@ -315,6 +317,53 @@ server <- function(input, output, session) {
     
     return (df_acu_by_suburb)
   }, rownames=FALSE)
+  
+  # output$df_alloc <- DT::renderDataTable({
+  #   df_popn_perc_by_state = xdf_popn_perc_by_state()
+  #   
+  #   colnames(df_acu_by_state_aggregated) = c('State',
+  #                                            'ACU Count',
+  #                                            'Home Care Places',
+  #                                            'Residential Places',
+  #                                            'Restorative Care Places',
+  #                                            'Total Capacity',
+  #                                            '%HCP', '%RP', '%RCP', '%Total ACU Capacity')
+  #   merged_df = merge(df_acu_by_state_aggregated,
+  #                     df_popn_perc_by_state,
+  #                     by="State", all.x=TRUE)
+  #   merged_df$Ratio = merged_df[, c('%Popn Distribution')]
+  #   merged_df$Ratio2 = merged_df[, c("%Total ACU Capacity")]
+  #   merged_df$Ratio = merged_df$Ratio / merged_df$Ratio2
+  #   merged_df$Ratio2 = NULL
+  #   colnames(merged_df) = c('State',
+  #                           'ACU Count',
+  #                           'Home Care Places',
+  #                           'Resi- dential Places',
+  #                           'Resto- rative Care Places',
+  #                           'Total ACU Capacity',
+  #                           '%HCP', '%RP', '%RCP', '%Total ACU Capacity',
+  #                           'Total Population',
+  #                           '%Popn Distribution',
+  #                           'Ratio %Popn-%ACU')
+  #   merged_df = merged_df[, c('State',
+  #                             'Total ACU Capacity',
+  #                             'Total Population',
+  #                             'Ratio %Popn-%ACU')]
+  # 
+  #   colnames(merged_df) = c('state',
+  #                           'total_acu_capacity',
+  #                           'total_population',
+  #                           'ratio_popn_acu')
+  #   merged_df$
+  #   df_acu = DT::datatable(merged_df, rownames=FALSE) %>% 
+  #     # formatPercentage(c('%HCP', '%RP', '%RCP',
+  #     #                    '%Total ACU Capacity',
+  #     #                    '%Popn Distribution'), 
+  #     #                  2) %>%
+  #     formatRound(c('Ratio %Popn-%ACU'), 2)
+  #   
+  #   return (df_acu)
+  # }, rownames=FALSE)
 }
 
 # Run the application 
