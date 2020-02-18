@@ -210,7 +210,7 @@ write_csv(df_acu_by_state, file.path(wd, 'df_acu_by_state_aggregated.csv'), quot
 
 # print(unique(df_acu$residential_places )).
 # print(head(df_popn))
-print(head(df_acu))
+# print(head(df_acu))
 # print(df_popn_by_state)
 # print(df_acu_by_state)
 
@@ -229,5 +229,5 @@ df_acu_by_suburb$hcp_perc = df_acu_by_suburb$home_care_places/sum(df_acu_by_subu
 df_acu_by_suburb$rp_perc = df_acu_by_suburb$residential_places/sum(df_acu_by_suburb$residential_places)
 df_acu_by_suburb$rcp_perc = df_acu_by_suburb$restorative_care_places/sum(df_acu_by_suburb$restorative_care_places)
 df_acu_by_suburb$total_perc = df_acu_by_suburb$total/sum(df_acu_by_suburb$total)
-write_csv(df_acu_by_suburb, file.path(wd, 'df_acu_by_suburb.csv'), quote=FALSE)
+write_csv(df_acu_by_suburb, file.path(wd, 'df_acu_by_suburb_aggregated.csv'), quote=FALSE)
 # print(head(df_acu_by_suburb))

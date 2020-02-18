@@ -18,7 +18,10 @@ source('preprocess.R')
 df_main <- preprocess_au_service_list('./Australia-30-June-2019-v2-1.csv',
                                       './Australian_Post_Codes_Lat_Lon.csv')
 df_popn_by_state_aggregated = read_csv('./df_popn_by_state_aggregated.csv')
+df_popn_by_lga_aggregated = read_csv('./df_popn_by_lga_aggregated.csv')
 df_acu_by_state_aggregated = read_csv('./df_acu_by_state_aggregated.csv')
+df_acu_by_suburb_aggregated = read_csv('./df_acu_by_suburb_aggregated.csv')
+print(head(df_acu_by_suburb_aggregated))
 
 ui <- fluidPage(
    
@@ -47,7 +50,9 @@ ui <- fluidPage(
         tabsetPanel(
           # tabPanel("Australian Map",
           #          leafletOutput(outputId = "population")),
-          tabPanel("Population by Age (Local Government Area)"),
+          tabPanel("Population by Age (Local Government Area)",
+                   DT::dataTableOutput(outputId='df_popn_by_lga'),
+                   DT::dataTableOutput(outputId='df_acu_by_suburb')),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),
@@ -174,6 +179,21 @@ server <- function(input, output, session) {
     return (df_acu)
   }, rownames=FALSE)
   
+  output$df_popn_by_lga <- DT::renderDataTable({
+    df_popn_lga = DT::datatable(df_popn_by_lga_aggregated, rownames=FALSE) # %>% 
+      # formatPercentage(c('hcp_perc', 'rp_perc', 'rcp_perc', 'total_perc'), 
+                       # 6)
+    
+    return (df_popn_lga)
+  }, rownames=FALSE)
+
+  output$df_acu_by_suburb <- DT::renderDataTable({
+    df_acu_by_suburb = DT::datatable(df_acu_by_suburb_aggregated, rownames=FALSE) %>%
+      formatPercentage(c('hcp_perc', 'rp_perc', 'rcp_perc', 'total_perc'),
+                       6)
+    
+    return (df_acu_by_suburb)
+  }, rownames=FALSE)
 }
 
 # Run the application 
