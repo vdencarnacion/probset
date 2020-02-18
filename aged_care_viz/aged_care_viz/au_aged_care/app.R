@@ -57,8 +57,8 @@ ui <- fluidPage(
         tabsetPanel(
           tabPanel("Australian Map",
                    leafletOutput(outputId = "population")),
-          tabPanel("ACU Allocation",
-                   DT::dataTableOutput(outputId='df_alloc')),
+          # tabPanel("ACU Allocation",
+          #          DT::dataTableOutput(outputId='df_alloc')),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),
