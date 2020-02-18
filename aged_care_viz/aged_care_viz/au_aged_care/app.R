@@ -39,14 +39,15 @@ ui <- fluidPage(
                     selected = c("ages35andUp")),
 
          actionButton(inputId = "go",
-                      label = "Go")
-         # width = 2
+                      label = "Go"),
+         width = 3
       ),
 
       mainPanel(
         tabsetPanel(
           # tabPanel("Australian Map",
           #          leafletOutput(outputId = "population")),
+          tabPanel("Population by Age (Local Government Area)"),
           tabPanel("Population by Age (State)",
                    plotlyOutput(outputId = "bargraph_age_range_by_state"),
                    DT::dataTableOutput(outputId='df_acu_by_state')),

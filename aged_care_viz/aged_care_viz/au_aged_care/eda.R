@@ -133,10 +133,11 @@ df_popn_by_state = df_popn_by_state[, c('abv_state',
                                         'ages85andUp')]
 write_csv(df_popn_by_state, file.path(wd, 'df_popn_by_state_aggregated.csv'), quote=FALSE)
 
-# df_popn = df_popn_by_state %>%
-#   gather(key="age_range", value="popn_by_age_range", -abv_state)
-# print(df_popn)
-# p = ggplot(data=df_popn, aes(x=abv_state, y=popn_by_age_range, fill=age_range)) + geom_bar(stat='identity')
+# GET TOTAL POPULATION - LGA LEVEL
+df_popn_by_lga =
+  df_popn %>%
+  group_by(lga_new) %>%
+  
 
 # AGGREGATE ACU BY STATE
 df_acu$home_care_places[is.na(df_acu$home_care_places)] <- 0
@@ -160,10 +161,9 @@ df_acu_by_state$rp_perc = df_acu_by_state$residential_places/sum(df_acu_by_state
 df_acu_by_state$rcp_perc = df_acu_by_state$restorative_care_places/sum(df_acu_by_state$restorative_care_places)
 df_acu_by_state$total_perc = df_acu_by_state$total/sum(df_acu_by_state$total)
 # df_acu$[is.na(df_acu$)] <- 0
-# print(unique(df_acu$residential_places ))
-
+# print(unique(df_acu$residential_places )).
 print(head(df_popn))
-# print(head(df_acu))
+print(head(df_acu))
 # print(df_popn_by_state)
 # print(df_acu_by_state)
 write_csv(df_acu_by_state, file.path(wd, 'df_acu_by_state_aggregated.csv'), quote=FALSE)
