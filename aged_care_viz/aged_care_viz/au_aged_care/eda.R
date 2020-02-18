@@ -182,7 +182,7 @@ df_popn_by_lga = df_popn_by_lga[, c('lga_new',
                                     'ages75andUp',
                                     'ages80andUp',
                                     'ages85andUp')]
-print(head(df_popn_by_lga))
+# print(head(df_popn_by_lga))
 write_csv(df_popn_by_lga, file.path(wd, 'df_popn_by_lga_aggregated.csv'), quote=FALSE)
 
 # AGGREGATE ACU BY STATE
@@ -206,11 +206,28 @@ df_acu_by_state$hcp_perc = df_acu_by_state$home_care_places/sum(df_acu_by_state$
 df_acu_by_state$rp_perc = df_acu_by_state$residential_places/sum(df_acu_by_state$residential_places)
 df_acu_by_state$rcp_perc = df_acu_by_state$restorative_care_places/sum(df_acu_by_state$restorative_care_places)
 df_acu_by_state$total_perc = df_acu_by_state$total/sum(df_acu_by_state$total)
-# df_acu$[is.na(df_acu$)] <- 0
-# print(unique(df_acu$residential_places )).
-# print(head(df_popn))
-# print(head(df_acu))
-# print(df_popn_by_state)
-# print(df_acu_by_state)
 write_csv(df_acu_by_state, file.path(wd, 'df_acu_by_state_aggregated.csv'), quote=FALSE)
 
+# print(unique(df_acu$residential_places )).
+# print(head(df_popn))
+print(head(df_acu))
+# print(df_popn_by_state)
+# print(df_acu_by_state)
+
+# AGGREGATE ACU BY SUBURB (LGA?)
+df_acu_by_suburb = 
+  df_acu %>%
+  group_by(state, suburb) %>%
+  summarise_at(c('count',
+                 'home_care_places',
+                 'residential_places',
+                 'restorative_care_places',
+                 'total'),
+               sum) %>%
+  data.frame()
+df_acu_by_suburb$hcp_perc = df_acu_by_suburb$home_care_places/sum(df_acu_by_suburb$home_care_places)
+df_acu_by_suburb$rp_perc = df_acu_by_suburb$residential_places/sum(df_acu_by_suburb$residential_places)
+df_acu_by_suburb$rcp_perc = df_acu_by_suburb$restorative_care_places/sum(df_acu_by_suburb$restorative_care_places)
+df_acu_by_suburb$total_perc = df_acu_by_suburb$total/sum(df_acu_by_suburb$total)
+write_csv(df_acu_by_suburb, file.path(wd, 'df_acu_by_suburb.csv'), quote=FALSE)
+# print(head(df_acu_by_suburb))
